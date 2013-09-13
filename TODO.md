@@ -6,6 +6,7 @@
     - Determine if `PYTHONDEPS_FILE_CHECKSUM` is truly being included in the
       checksums for do_package, and if not, fix it. We need to ensure that we
       re-run our auto deps code when the scanner code changes.
+    - Consider python package-level handling via metadata like siteinfo
 
 - Add version-specific dependency handling
 - Deal with the multiple provider case
