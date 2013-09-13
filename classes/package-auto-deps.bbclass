@@ -3,10 +3,13 @@ inherit package
 AUTO_DEPEND_TYPES ?= ""
 AUTO_DEPEND_TYPES[type] = "list"
 
+AUTO_DEPEND_CLASSES = "${@' '.join('package-auto-deps/' + t for t in '${AUTO_DEPEND_TYPES}'.split())}"
+
+inherit ${AUTO_DEPEND_CLASSES}
+
+
 AUTO_MAPPED_DEPENDS_FILE = "{pkgdest}/{pkg}.{auto_type}.autodeps"
 AUTO_DEPENDS_FILE = "{pkgdest}/auto/{auto_type}/{pkg}"
-
-inherit ${@' '.join('package-auto-deps/' + t for t in '${AUTO_DEPEND_TYPES}'.split())}
 
 
 def auto_depend_included_types(d):
@@ -22,7 +25,6 @@ all_pkgdata_dirs[vardepsexclude] = "PKGTRIPLETS"
 
 PKGDATADIRS = "${@all_pkgdata_dirs(d)}"
 PKGDATADIRS[type] = "list"
-
 
 python process_automatic_dependencies() {
     """For each package, write out its automatic provides, and determine its
@@ -99,7 +101,7 @@ python process_automatic_dependencies() {
                     f.writelines(d + '\n' for d in mapped_depends)
 }
 
-def gen_auto_package_deps(d):
+def auto_depend_vardeps(d):
     """Return variable dependencies for process_automatic_dependencies."""
     auto_package_types = auto_depend_included_types(d)
     vardeps = ['AUTO_DEPEND_TYPES']
@@ -107,7 +109,7 @@ def gen_auto_package_deps(d):
     vardeps.extend(d.getVar('AUTO_DEPEND_{}_HOOK' + t.upper(), True) or '' for t in auto_package_types)
     return ' '.join(vardeps)
 
-process_automatic_dependencies[vardeps] += "${@gen_auto_package_deps(d)}"
+process_automatic_dependencies[vardeps] += "${@auto_depend_vardeps(d)}"
 
 def read_autodep_files(d):
     """Read dep information written by process_automatic_dependencies"""
@@ -145,8 +147,6 @@ python read_autodeps () {
             for v in autodeps[pkg][dep]:
                 if v not in rdepends[dep]:
                     rdepends[dep].append(v)
-        # if autodeps[pkg]:
-        #     bb.debug(1, "package_auto_deps: read RDEPENDS_%s: %s" % (pkg, autodeps[pkg]))
         d.setVar('RDEPENDS_' + pkg, bb.utils.join_deps(rdepends, commasep=False))
 }
 
