@@ -132,12 +132,6 @@ def get_depends_recursive(directory):
     sys.path[0:0] = [directory]
     for imp, name, ispkg in pkgutil.walk_packages([directory]):
         loader = imp.find_module(name)
-        if ispkg or '.' in name:
-            package = name.split('.')[0]
-            modules = list(m for m, i in imp.iter_modules())
-        else:
-            modules = []
-
         filename = loader.get_filename()
         if not filename.startswith(directory + '/'):
             raise DependError(directory, "Package walking encountered path `{}`, outside the tree".format(filename))
@@ -153,13 +147,7 @@ def get_depends_recursive(directory):
         source = loader.get_source()
         depends = get_code_depends(source, filename, provide, ispkg)
         for depend, by in depends:
-            if depend.startswith('.'):
-                depend = depend[1:]
-                yield '{}.{}'.format(package, depend), by
-            elif depend in modules:
-                yield '{}.{}'.format(package, depend), by
-            else:
-                yield depend, by
+            yield depend, by
 
 
 def get_depends(path):
