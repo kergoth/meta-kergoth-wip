@@ -8,7 +8,12 @@
       re-run our auto deps code when the scanner code changes.
     - Consider python package-level handling via metadata like siteinfo
 
-- Add version-specific dependency handling
+- Add version-specific dependency handling.
+    I think this should be doable by making each deps file in pkgdata a list
+    of providers, and make each entry a versioned dep per bitbake, and alter
+    the code to split that, and add the ability for a given type to opt-in to
+    use of such version specific dependencies.
+
 - Deal with the multiple provider case
 - Implement shlibs
 - Implement kernel modules
