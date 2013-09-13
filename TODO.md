@@ -1,6 +1,12 @@
 - Use format string variables to act as internal documentation of where the
   files we read and write are located
 - Add further documentation to the bbclasses
+- python:
+
+    - Determine if `PYTHONDEPS_FILE_CHECKSUM` is truly being included in the
+      checksums for do_package, and if not, fix it. We need to ensure that we
+      re-run our auto deps code when the scanner code changes.
+
 - Add version-specific dependency handling
 - Deal with the multiple provider case
 - Implement shlibs
