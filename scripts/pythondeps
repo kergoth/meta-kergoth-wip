@@ -51,6 +51,9 @@ class ImportVisitor(ast.NodeVisitor):
 
 
 def get_provides(path):
+    if not path.endswith('/'):
+        path = path + '/'
+
     provides = set()
     for root, dirnames, filenames in os.walk(path):
         full_root = root
