@@ -41,13 +41,14 @@ class DependError(PythonDepError):
 class ImportVisitor(ast.NodeVisitor):
     def __init__(self):
         self.imports = set()
+        self.importsfrom = []
 
     def visit_Import(self, node):
         for alias in node.names:
             self.imports.add(alias.name)
 
     def visit_ImportFrom(self, node):
-        self.imports.add(node.module)
+        self.importsfrom.append((node.module, [a.name for a in node.names], node.level))
 
 
 def get_provides(path):
@@ -76,7 +77,7 @@ def get_provides(path):
     return provides
 
 
-def get_code_depends(code_string, path=None):
+def get_code_depends(code_string, path=None, provide=None, ispkg=False):
     try:
         code = ast.parse(code_string, path)
     except TypeError as exc:
@@ -93,6 +94,26 @@ def get_code_depends(code_string, path=None):
     for module in visitor.imports:
         yield module, path
 
+    if provide:
+        provide_elements = provide.split('.')
+        if ispkg:
+            provide_elements.append("__self__")
+
+    for module, names, level in visitor.importsfrom:
+        if level == 0:
+            yield module, path
+        elif not provide:
+            raise DependError("Error: ImportFrom non-zero level outside of a package: {0}".format((module, names level)), path)
+        elif level > len(provide_elements):
+            raise DependError("Error: ImportFrom level exceeds package depth: {0}".format((module, names level)), path)
+        else:
+            context = '.'.join(provide_elements[:-level])
+            if module:
+                if context:
+                    yield context + '.' + module, path
+                else:
+                    yield module, path
+
 
 def get_file_depends(path):
     try:
@@ -107,6 +128,7 @@ def get_depends_recursive(directory):
     import pkgutil
     directory = os.path.realpath(directory)
 
+    provides = dict((v, k) for k, v in get_provides(directory))
     sys.path[0:0] = [directory]
     for imp, name, ispkg in pkgutil.walk_packages([directory]):
         loader = imp.find_module(name)
@@ -123,7 +145,13 @@ def get_depends_recursive(directory):
         if not filename.endswith('.py'):
             continue
 
-        depends = list(get_code_depends(loader.get_source(), filename))
+        if ispkg:
+            provide = provides.get(os.path.dirname(filename))
+        else:
+            provide = provides.get(filename)
+
+        source = loader.get_source()
+        depends = get_code_depends(source, filename, provide, ispkg)
         for depend, by in depends:
             if depend.startswith('.'):
                 depend = depend[1:]
@@ -162,16 +190,15 @@ def main():
         for module in sorted(modules):
             print(module)
     elif args.depends:
-        modules = set()
         for path in args.path:
             try:
-                modules |= set(get_depends(path))
+                modules = get_depends(path)
             except PythonDepError as exc:
                 logger.error(str(exc))
                 sys.exit(1)
 
-        for module, imp_by in sorted(modules):
-            print("{} {}".format(module, imp_by))
+            for module, imp_by in modules:
+                print("{} {}".format(module, imp_by))
     else:
         parser.print_help()
         sys.exit(2)
