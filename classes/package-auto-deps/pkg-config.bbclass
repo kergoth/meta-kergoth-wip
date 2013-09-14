@@ -39,6 +39,7 @@ def determine_pkgconfig_depends(d, pkg, files):
                 if field_match.group('var') == 'Requires':
                     exp = bb.data.expand(field_match.group('val'), pd)
                     for entry in exp.split(','):
+                        entry = entry.strip()
                         try:
                             dep, ver = entry.split(' ', 1)
                         except ValueError:
