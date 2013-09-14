@@ -36,14 +36,15 @@ python process_automatic_dependencies() {
     context = bb.utils.get_context()
 
     for auto_type in auto_depend_included_types(d):
-        hook = d.getVar("AUTO_DEPEND_{}_HOOK".format(auto_type.upper()), True)
+        auto_type_caps = auto_type.upper()
+        hook = d.getVar("AUTO_DEPEND_{}_HOOK".format(auto_type_caps), True)
         if not hook:
-            bb.fatal("AUTO_DEPEND_{}_HOOK is undefined".format(auto_type.upper()))
+            bb.fatal("AUTO_DEPEND_{}_HOOK is undefined".format(auto_type_caps))
 
         try:
             auto_provide_func_name, auto_depend_func_name = hook.split(None, 1)
         except ValueError:
-            bb.fatal("Invalid value `{}` for AUTO_DEPEND_{}_HOOK".format(hook, auto_type.upper()))
+            bb.fatal("Invalid value `{}` for AUTO_DEPEND_{}_HOOK".format(hook, auto_type_caps))
 
         if auto_provide_func_name not in context:
             bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_provide_func_name))
@@ -56,10 +57,17 @@ python process_automatic_dependencies() {
         destdir = os.path.join(pkgdestwork, 'auto', auto_type)
         bb.utils.mkdirhier(destdir)
 
+        extra_depends, exclude_depends = get_manual_depends_data(auto_type, d)
+        extra_provides, exclude_provides = get_manual_provides_data(auto_type, d)
         auto_provides, auto_depends = collections.defaultdict(set), collections.defaultdict(set)
         provided_by = {}
         for pkg in packages:
             provides = auto_provide_func(d, pkg, pkgfiles[pkg]) or []
+            provides.extend(extra_provides.get(pkg, []))
+            excluded_pkg_provides = exclude_provides.get(pkg)
+            if excluded_pkg_provides:
+                provides = filter(lambda p: p not in excluded_pkg_provides)
+
             if provides:
                 bb.debug(1, "package_auto_deps: auto_provides %s for %s: %s" % (auto_type, pkg, provides))
                 auto_provides[pkg] |= set(provides)
@@ -69,7 +77,12 @@ python process_automatic_dependencies() {
                     with open(os.path.join(destdir, provide), 'w') as f:
                         f.write(pkg)
 
-            depends = auto_depend_func(d, pkg, pkgfiles[pkg])
+            depends = auto_depend_func(d, pkg, pkgfiles[pkg]) or []
+            depends.extend(extra_depends.get(pkg, []))
+            excluded_pkg_depends = exclude_depends.get(pkg)
+            if excluded_pkg_depends:
+                depends = filter(lambda p: p not in excluded_pkg_depends)
+
             if depends:
                 bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, depends))
                 auto_depends[pkg] |= set(d for d in depends if d not in auto_provides[pkg])
@@ -101,12 +114,54 @@ python process_automatic_dependencies() {
                     f.writelines(d + '\n' for d in mapped_depends)
 }
 
+def get_manual_depends_data(auto_type, d):
+    import collections
+
+    auto_type_caps = auto_type.upper()
+    extra_str = d.getVar('AUTO_{}_DEPENDS_EXTRA'.format(auto_type_caps), True) or ''
+    extra = collections.defaultdict(set)
+    for e in extra_str.split():
+        pkg, depend = e.split(':', 1)
+        extra[pkg].add(depend)
+
+    exclude_str = d.getVar('AUTO_{}_DEPENDS_EXCLUDE'.format(auto_type_caps), True) or ''
+    exclude = collections.defaultdict(set)
+    for e in exclude_str.split():
+        pkg, depend = e.split(':', 1)
+        exclude[pkg].add(depend)
+
+    return extra, exclude
+
+def get_manual_provides_data(auto_type, d):
+    import collections
+
+    auto_type_caps = auto_type.upper()
+    extra_str = d.getVar('AUTO_{}_PROVIDES_EXTRA'.format(auto_type_caps), True) or ''
+    extra = collections.defaultdict(set)
+    for e in extra_str.split():
+        pkg, depend = e.split(':', 1)
+        extra[pkg].add(depend)
+
+    exclude_str = d.getVar('AUTO_{}_PROVIDES_EXCLUDE'.format(auto_type_caps), True) or ''
+    exclude = collections.defaultdict(set)
+    for e in exclude_str.split():
+        pkg, depend = e.split(':', 1)
+        exclude[pkg].add(depend)
+
+    return extra, exclude
+
 def auto_depend_vardeps(d):
     """Return variable dependencies for process_automatic_dependencies."""
     auto_package_types = auto_depend_included_types(d)
     vardeps = ['AUTO_DEPEND_TYPES']
-    vardeps.extend('AUTO_DEPEND_{}_HOOK' + t.upper() for t in auto_package_types)
-    vardeps.extend(d.getVar('AUTO_DEPEND_{}_HOOK' + t.upper(), True) or '' for t in auto_package_types)
+    for t in auto_package_types:
+        t_caps = t.upper()
+        hook = 'AUTO_DEPEND_{}_HOOK'.format(t_caps)
+        vardeps.append(hook)
+        vardeps.extend((d.getVar(hook, True) or '').split())
+        for e in ["EXTRA", "EXCLUDE"]:
+            for m in ["DEPENDS", "PROVIDES"]:
+                vardeps.append('AUTO_{}_{}_{}'.format(t_caps, m, e))
     return ' '.join(vardeps)
 
 process_automatic_dependencies[vardeps] += "${@auto_depend_vardeps(d)}"
