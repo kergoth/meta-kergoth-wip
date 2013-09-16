@@ -3,18 +3,18 @@
 - Add further documentation to the bbclasses
 - python:
 
-    - Determine if `PYTHONDEPS_FILE_CHECKSUM` is truly being included in the
-      checksums for do_package, and if not, fix it. We need to ensure that we
-      re-run our auto deps code when the scanner code changes.
-    - Consider python package-level handling via metadata like siteinfo
+    - Consider handling namespace packages
 
 - Add version-specific dependency handling.
-    I think this should be doable by making each deps file in pkgdata a list
-    of providers, and make each entry a versioned dep per bitbake, and alter
-    the code to split that, and add the ability for a given type to opt-in to
-    use of such version specific dependencies.
+  I think this should be doable by making each deps file in pkgdata a list
+  of providers, and make each entry a versioned dep per bitbake, and alter
+  the code to split that, and add the ability for a given type to opt-in to
+  use of such version specific dependencies
 
-- Deal with the multiple provider case
+- Add a sanity check which warns if an autodetected runtime dependency pulls
+  in an rdepend which was emitted by a recipe we don't depend upon, to catch
+  non-deterministic behavior
+
 - Implement shlibs
 - Implement kernel modules
 - Implement perl, m4, ruby

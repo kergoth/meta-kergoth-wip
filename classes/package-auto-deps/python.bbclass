@@ -31,7 +31,6 @@ PYTHON_SHEBANG_PREFIXES[separator] = "|"
 PYTHONDEPS_FILE = "${@bb.utils.which(BBPATH, 'scripts/pythondeps')}"
 PYTHONDEPS_FILE_CHECKSUM = "${@bb.utils.md5_file(PYTHONDEPS_FILE)}"
 PYTHONDEPS_FILE_CHECKSUM[vardepvalue] = "${PYTHONDEPS_FILE_CHECKSUM}"
-PYTHONDEPS_FILE_CHECKSUM[vardepsexclude] += "PYTHONDEPS_FILE"
 
 def determine_python_provides(d, pkg, files):
     import subprocess
