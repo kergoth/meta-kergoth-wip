@@ -33,11 +33,6 @@ PYTHONDEPS_FILE_CHECKSUM = "${@bb.utils.md5_file(PYTHONDEPS_FILE)}"
 PYTHONDEPS_FILE_CHECKSUM[vardepvalue] = "${PYTHONDEPS_FILE_CHECKSUM}"
 PYTHONDEPS_FILE_CHECKSUM[vardepsexclude] += "PYTHONDEPS_FILE"
 
-# Lxml supports both python 2 and 3, so has many imports in try/except blocks
-# to handle module renames, and pythondeps isn't smart enough to handle that
-# just yet
-PYTHON_DEPS_SEARCH_PATHS_pn-python-lxml = ""
-
 def determine_python_provides(d, pkg, files):
     import subprocess
 
