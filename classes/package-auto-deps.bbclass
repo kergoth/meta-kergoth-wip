@@ -121,14 +121,24 @@ def get_manual_depends_data(auto_type, d):
     extra_str = d.getVar('AUTO_{}_DEPENDS_EXTRA'.format(auto_type_caps), True) or ''
     extra = collections.defaultdict(set)
     for e in extra_str.split():
-        pkg, depend = e.split(':', 1)
-        extra[pkg].add(depend)
+        try:
+            pkg, depend = e.split(':', 1)
+        except ValueError:
+            for pkg in d.getVar('PACKAGES', True).split():
+                extra[pkg].add(e)
+        else:
+            extra[pkg].add(depend)
 
     exclude_str = d.getVar('AUTO_{}_DEPENDS_EXCLUDE'.format(auto_type_caps), True) or ''
     exclude = collections.defaultdict(set)
     for e in exclude_str.split():
-        pkg, depend = e.split(':', 1)
-        exclude[pkg].add(depend)
+        try:
+            pkg, depend = e.split(':', 1)
+        except ValueError:
+            for pkg in d.getVar('PACKAGES', True).split():
+                exclude[pkg].add(e)
+        else:
+            exclude[pkg].add(depend)
 
     return extra, exclude
 
@@ -139,14 +149,24 @@ def get_manual_provides_data(auto_type, d):
     extra_str = d.getVar('AUTO_{}_PROVIDES_EXTRA'.format(auto_type_caps), True) or ''
     extra = collections.defaultdict(set)
     for e in extra_str.split():
-        pkg, depend = e.split(':', 1)
-        extra[pkg].add(depend)
+        try:
+            pkg, provide = e.split(':', 1)
+        except ValueError:
+            for pkg in d.getVar('PACKAGES', True).split():
+                extra[pkg].add(e)
+        else:
+            extra[pkg].add(provide)
 
     exclude_str = d.getVar('AUTO_{}_PROVIDES_EXCLUDE'.format(auto_type_caps), True) or ''
     exclude = collections.defaultdict(set)
     for e in exclude_str.split():
-        pkg, depend = e.split(':', 1)
-        exclude[pkg].add(depend)
+        try:
+            pkg, provide = e.split(':', 1)
+        except ValueError:
+            for pkg in d.getVar('PACKAGES', True).split():
+                exclude[pkg].add(e)
+        else:
+            exclude[pkg].add(provide)
 
     return extra, exclude
 
