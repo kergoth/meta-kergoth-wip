@@ -56,6 +56,7 @@ python process_automatic_dependencies() {
 
         destdir = os.path.join(pkgdestwork, 'auto', auto_type)
         bb.utils.mkdirhier(destdir)
+        pkgdata_dirs = oe.data.typed_value('PKGDATADIRS', d)
 
         extra_depends, exclude_depends = get_manual_depends_data(auto_type, d)
         extra_provides, exclude_provides = get_manual_provides_data(auto_type, d)
@@ -87,8 +88,6 @@ python process_automatic_dependencies() {
                 bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, depends))
                 auto_depends[pkg] |= set(d for d in depends if d not in auto_provides[pkg])
 
-        pkgdata_dirs = oe.data.typed_value('PKGDATADIRS', d)
-        for pkg in packages:
             mapped_depends = set()
             for depend in auto_depends[pkg]:
                 if depend in provided_by:
