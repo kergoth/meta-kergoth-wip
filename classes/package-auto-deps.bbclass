@@ -95,7 +95,7 @@ python process_automatic_dependencies() {
                         dep_package = f.read().rstrip()
                     break
                 else:
-                    bb.fatal("No available provider for dependency `{}` of {}".format(depend, pkg))
+                    bb.fatal("No available {} provider for dependency `{}` of {}".format(auto_type, depend, pkg))
 
                 mapped_depends.add(dep_package)
                 provided_by[depend] = dep_package
