@@ -3,6 +3,7 @@ inherit package
 AUTO_DEPEND_TYPES ?= ""
 AUTO_DEPEND_TYPES[type] = "list"
 
+
 AUTO_DEPEND_CLASSES = "${@' '.join('package-auto-deps/' + t for t in '${AUTO_DEPEND_TYPES}'.split())}"
 
 inherit ${AUTO_DEPEND_CLASSES}
@@ -11,20 +12,12 @@ inherit ${AUTO_DEPEND_CLASSES}
 AUTO_MAPPED_DEPENDS_FILE = "{pkgdest}/{pkg}.{auto_type}.autodeps"
 AUTO_DEPENDS_FILE = "{pkgdest}/auto/{auto_type}/{pkg}"
 
+AUTO_PKGDATA_DIR = "${PKGDATA_DIR}/${MLPREFIX}auto"
+AUTO_PKGDATA_WORKDIR = "${PKGDESTWORK}/${MLPREFIX}auto"
+
 
 def auto_depend_included_types(d):
     return d.getVar('AUTO_DEPEND_TYPES', True).split()
-
-def all_pkgdata_dirs(d):
-    dirs = []
-    triplets = (d.getVar("PKGTRIPLETS") or "").split()
-    for t in triplets:
-        dirs.append("${TMPDIR}/pkgdata/" + t)
-    return " ".join(dirs)
-all_pkgdata_dirs[vardepsexclude] = "PKGTRIPLETS"
-
-PKGDATADIRS = "${@all_pkgdata_dirs(d)}"
-PKGDATADIRS[type] = "list"
 
 python process_automatic_dependencies() {
     """For each package, write out its automatic provides, and determine its
@@ -32,7 +25,8 @@ python process_automatic_dependencies() {
     import collections
 
     packages = d.getVar('PACKAGES', True).split()
-    pkgdestwork = d.getVar('PKGDESTWORK', True)
+    autopkgdatadir = d.getVar('AUTO_PKGDATA_DIR', True)
+    autopkgdatadest = d.getVar('AUTO_PKGDATA_WORKDIR', True)
     context = bb.utils.get_context()
 
     for auto_type in auto_depend_included_types(d):
@@ -54,9 +48,8 @@ python process_automatic_dependencies() {
             bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_depend_func_name))
         auto_depend_func = context[auto_depend_func_name]
 
-        destdir = os.path.join(pkgdestwork, 'auto', auto_type)
+        destdir = os.path.join(autopkgdatadest, auto_type)
         bb.utils.mkdirhier(destdir)
-        pkgdata_dirs = oe.data.typed_value('PKGDATADIRS', d)
 
         extra_depends, exclude_depends = get_manual_depends_data(auto_type, d)
         extra_provides, exclude_provides = get_manual_provides_data(auto_type, d)
@@ -94,13 +87,11 @@ python process_automatic_dependencies() {
                     mapped_depends.add(provided_by[depend])
                     continue
 
-                for path in pkgdata_dirs:
-                    path = os.path.join(path, 'auto', auto_type)
-                    file_path = os.path.join(path, depend)
-                    if os.path.exists(file_path):
-                        with open(file_path, 'r') as f:
-                            dep_package = f.read().rstrip()
-                        break
+                dep_file_path = os.path.join(autopkgdatadir, auto_type, depend)
+                if os.path.exists(dep_file_path):
+                    with open(dep_file_path, 'r') as f:
+                        dep_package = f.read().rstrip()
+                    break
                 else:
                     bb.fatal("No available provider for dependency `{}` of {}".format(depend, pkg))
 
