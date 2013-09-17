@@ -7,7 +7,7 @@ do_install_append () {
 
 # Another try/except import block. Use 'xml.etree.ElementTree', not these
 AUTO_PYTHON_DEPENDS_EXCLUDE += "\
-    python-pyqt:ElementTree \
+    python-pyqt:ElementPath \
     python-pyqt:elementtree.ElementTree \
     python-pyqt:PyQt4.elementtree.ElementTree \
 "
