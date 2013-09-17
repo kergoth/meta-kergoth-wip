@@ -66,7 +66,7 @@ python process_automatic_dependencies() {
             provides.extend(extra_provides.get(pkg, []))
             excluded_pkg_provides = exclude_provides.get(pkg)
             if excluded_pkg_provides:
-                provides = filter(lambda p: p not in excluded_pkg_provides)
+                provides = filter(lambda p: p not in excluded_pkg_provides, provides)
 
             if provides:
                 bb.debug(1, "package_auto_deps: auto_provides %s for %s: %s" % (auto_type, pkg, provides))
@@ -81,7 +81,7 @@ python process_automatic_dependencies() {
             depends.extend(extra_depends.get(pkg, []))
             excluded_pkg_depends = exclude_depends.get(pkg)
             if excluded_pkg_depends:
-                depends = filter(lambda p: p not in excluded_pkg_depends)
+                depends = filter(lambda p: p not in excluded_pkg_depends, depends)
 
             if depends:
                 bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, depends))
