@@ -81,20 +81,20 @@ python process_automatic_dependencies() {
                 bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, depends))
                 auto_depends[pkg] |= set(d for d in depends if d not in auto_provides[pkg])
 
-        for pkg in packages:
+        for pkg, pkg_auto_depends in auto_depends.items():
             mapped_depends = set()
-            for depend in auto_depends[pkg]:
+            for depend in pkg_auto_depends:
                 if depend in provided_by:
-                    mapped_depends.add(provided_by[depend])
-                    continue
-
-                dep_file_path = os.path.join(autopkgdatadir, auto_type, depend)
-                if os.path.exists(dep_file_path):
-                    with open(dep_file_path, 'r') as f:
-                        dep_package = f.read().rstrip()
-                    break
+                    dep_package = provided_by[depend]
                 else:
-                    bb.fatal("No available {} provider for dependency `{}` of {}".format(auto_type, depend, pkg))
+                    dep_file_path = os.path.join(autopkgdatadir, auto_type, depend)
+                    if os.path.exists(dep_file_path):
+                        with open(dep_file_path, 'r') as f:
+                            dep_package = f.read().rstrip()
+                    else:
+                        bb.fatal("No available {} provider for dependency `{}` of {}".format(auto_type, depend, pkg))
+
+                    provided_by[depend] = dep_package
 
                 mapped_depends.add(dep_package)
                 provided_by[depend] = dep_package
