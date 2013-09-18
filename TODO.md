@@ -1,6 +1,12 @@
 - Use format string variables to act as internal documentation of where the
   files we read and write are located
 - Add further documentation to the bbclasses
+- Add variable to opt-out of just provides or just depends of a particular
+  auto package type. There are cases where dependency scanning doesn't work
+  fully, yet the provides are still useful to satisfy deps of others.
+- Consider dropping the .autodeps files, or just emitting them as a debugging
+  aid, rather than running two packagefuncs and using them as inter-function
+  communication.
 - python:
 
     - Consider handling namespace packages
