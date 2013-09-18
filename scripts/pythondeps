@@ -91,17 +91,35 @@ def get_code_depends(code_string, path=None, provide=None, ispkg=False):
         if builtin_module in visitor.imports:
             visitor.imports.remove(builtin_module)
 
-    for module in visitor.imports:
-        yield module, path
-
     if provide:
         provide_elements = provide.split('.')
         if ispkg:
             provide_elements.append("__self__")
+        context = '.'.join(provide_elements[:-1])
+        package_path = os.path.dirname(path)
+    else:
+        context = None
+        package_path = None
+
+    levelzero_importsfrom = (module for module, names, level in visitor.importsfrom
+                             if level == 0)
+    for module in visitor.imports | set(levelzero_importsfrom):
+        if context and path:
+            found = False
+            for suffix in suffixes:
+                module_basepath = os.path.join(package_path, module.replace('.', '/'))
+                if os.path.exists(module_basepath + suffix):
+                    # Implicit relative import
+                    yield context + '.' + module, path
+                    break
+            else:
+                yield module, path
+        else:
+            yield module, path
 
     for module, names, level in visitor.importsfrom:
         if level == 0:
-            yield module, path
+            continue
         elif not provide:
             raise DependError("Error: ImportFrom non-zero level outside of a package: {0}".format((module, names, level)), path)
         elif level > len(provide_elements):
