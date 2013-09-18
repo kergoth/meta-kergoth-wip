@@ -23,3 +23,4 @@
 - Open yocto bug regarding a bitbake issue I found. 'd' isn't useable from
   inside a ${@} block expanded from a vardeps flag. It seemingly is not
   available in the python eval context at that point.
+- libfm: ship .pc files based on the gtk version it was built with
