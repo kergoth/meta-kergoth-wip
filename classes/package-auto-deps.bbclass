@@ -202,19 +202,20 @@ def read_autodep_files(d):
 python read_autodeps () {
     """Read the autodep files written by process_automatic_dependencies, and
     update RDEPENDS with this information."""
+    import collections
+
     autodeps = read_autodep_files(d)
 
-    packages = d.getVar('PACKAGES', True).split()
-    for pkg in packages:
+    for pkg, pkg_autodeps in autodeps.items():
         rdepends = bb.utils.explode_dep_versions2(d.getVar('RDEPENDS_' + pkg, True) or "")
-        for dep in autodeps[pkg]:
-            # Add the dep if it's not already there, or if no comparison is set
-            if dep not in rdepends:
-                rdepends[dep] = []
-            for v in autodeps[pkg][dep]:
-                if v not in rdepends[dep]:
-                    rdepends[dep].append(v)
-        d.setVar('RDEPENDS_' + pkg, bb.utils.join_deps(rdepends, commasep=False))
+        new_rdepends = collections.defaultdict(list)
+        for dep, v in pkg_autodeps.items():
+            if rdepends.get(dep) != v:
+                new_rdepends[dep].extend(v)
+
+        added_deps = bb.utils.join_deps(new_rdepends, commasep=False)
+        bb.debug(1, "Automatically added rdepends for {}: {}".format('RDEPENDS_' + pkg, added_deps))
+        d.appendVar('RDEPENDS_' + pkg, ' ' + added_deps)
 }
 
 PACKAGEFUNCS := "${@PACKAGEFUNCS.replace('read_shlibdeps', 'process_automatic_dependencies read_autodeps read_shlibdeps')}"
