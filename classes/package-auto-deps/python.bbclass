@@ -19,7 +19,10 @@ PYTHON_PROVIDES_SEARCH_PATHS = "\
     ${PYTHON_SITEPACKAGES_DIR} \
     ${libdir}/python${PYTHON_MAJMIN} \
     ${libdir}/python${PYTHON_MAJMIN}/lib-dynload \
+    ${PYTHON_PROVIDES_SEARCH_PATH_PLAT} \
 "
+PYTHON_PROVIDES_SEARCH_PATH_PLAT = ""
+PYTHON_PROVIDES_SEARCH_PATH_PLAT_linux = "${libdir}/python${PYTHON_MAJMIN}/plat-linux2"
 PYTHON_PROVIDES_SEARCH_PATHS[type] = "list"
 
 PYTHON_EXECUTABLE_SEARCH_PATHS = "${bindir} ${base_bindir} ${sbindir} ${libexecdir}"
