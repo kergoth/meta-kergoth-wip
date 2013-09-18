@@ -27,32 +27,15 @@ python process_automatic_dependencies() {
     packages = d.getVar('PACKAGES', True).split()
     autopkgdatadir = d.getVar('AUTO_PKGDATA_DIR', True)
     autopkgdatadest = d.getVar('AUTO_PKGDATA_WORKDIR', True)
-    context = bb.utils.get_context()
 
     for auto_type in auto_depend_included_types(d):
-        auto_type_caps = auto_type.upper()
-        hook = d.getVar("AUTO_DEPEND_{}_HOOK".format(auto_type_caps), True)
-        if not hook:
-            bb.fatal("AUTO_DEPEND_{}_HOOK is undefined".format(auto_type_caps))
-
-        try:
-            auto_provide_func_name, auto_depend_func_name = hook.split(None, 1)
-        except ValueError:
-            bb.fatal("Invalid value `{}` for AUTO_DEPEND_{}_HOOK".format(hook, auto_type_caps))
-
-        if auto_provide_func_name not in context:
-            bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_provide_func_name))
-        auto_provide_func = context[auto_provide_func_name]
-
-        if auto_depend_func_name not in context:
-            bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_depend_func_name))
-        auto_depend_func = context[auto_depend_func_name]
-
         destdir = os.path.join(autopkgdatadest, auto_type)
         bb.utils.mkdirhier(destdir)
 
+        auto_provide_func, auto_depend_func = get_auto_hooks(auto_type, d)
         extra_depends, exclude_depends = get_manual_depends_data(auto_type, d)
         extra_provides, exclude_provides = get_manual_provides_data(auto_type, d)
+
         auto_provides, auto_depends = collections.defaultdict(set), collections.defaultdict(set)
         provided_by = {}
         for pkg in packages:
@@ -106,6 +89,30 @@ python process_automatic_dependencies() {
                 with open(depsfile, 'w') as f:
                     f.writelines(d + '\n' for d in mapped_depends)
 }
+
+def get_auto_hooks(auto_type, d):
+    context = bb.utils.get_context()
+    auto_type_caps = auto_type.upper()
+
+    hook = d.getVar("AUTO_DEPEND_{}_HOOK".format(auto_type_caps), True)
+    if not hook:
+        bb.fatal("AUTO_DEPEND_{}_HOOK is undefined".format(auto_type_caps))
+
+    try:
+        auto_provide_func_name, auto_depend_func_name = hook.split(None, 1)
+    except ValueError:
+        bb.fatal("Invalid value `{}` for AUTO_DEPEND_{}_HOOK".format(hook, auto_type_caps))
+
+    try:
+        auto_provide_func = context[auto_provide_func_name]
+    except KeyError:
+        bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_provide_func_name))
+
+    try:
+        auto_depend_func = context[auto_depend_func_name]
+    except KeyError:
+        bb.fatal("Unable to run undefined auto package hook function `{}`".format(auto_depend_func_name))
+    return auto_provide_func, auto_depend_func
 
 def get_manual_depends_data(auto_type, d):
     import collections
