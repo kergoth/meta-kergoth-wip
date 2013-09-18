@@ -196,8 +196,7 @@ def read_autodep_files(d):
                 for l in lines:
                     deps = bb.utils.explode_dep_versions2(l.rstrip())
                     for dep in deps:
-                        if not dep in autodeps[pkg]:
-                            autodeps[pkg][dep].extend(deps[dep])
+                        autodeps[pkg][dep].extend(deps[dep])
     return autodeps
 
 python read_autodeps () {
