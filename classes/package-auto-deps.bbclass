@@ -63,8 +63,9 @@ python process_automatic_dependencies() {
                 provides = filter(lambda p: p not in excluded_pkg_provides, provides)
 
             if provides:
-                bb.debug(1, "package_auto_deps: auto_provides %s for %s: %s" % (auto_type, pkg, provides))
-                auto_provides[pkg] |= set(provides)
+                provides = set(provides)
+                bb.debug(1, "package_auto_deps: auto_provides %s for %s: %s" % (auto_type, pkg, " ".join(provides)))
+                auto_provides[pkg] |= provides
 
                 for provide in provides:
                     provided_by[provide] = pkg
@@ -78,8 +79,9 @@ python process_automatic_dependencies() {
                 depends = filter(lambda p: p not in excluded_pkg_depends, depends)
 
             if depends:
-                bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, depends))
-                auto_depends[pkg] |= set(d for d in depends if d not in auto_provides[pkg])
+                depends = set(depends)
+                bb.debug(1, "package_auto_deps: auto_depends %s for %s: %s" % (auto_type, pkg, " ".join(depends)))
+                auto_depends[pkg] |= depends
 
         for pkg, pkg_auto_depends in auto_depends.items():
             mapped_depends = set()
