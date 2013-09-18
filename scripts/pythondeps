@@ -105,8 +105,13 @@ def get_code_depends(code_string, path=None, provide=None, ispkg=False):
                              if level == 0)
     for module in visitor.imports | set(levelzero_importsfrom):
         if context and path:
+            module_basepath = os.path.join(package_path, module.replace('.', '/'))
+            if os.path.exists(module_basepath):
+                # Implicit relative import
+                yield context + '.' + module, path
+                continue
+
             for suffix in suffixes:
-                module_basepath = os.path.join(package_path, module.replace('.', '/'))
                 if os.path.exists(module_basepath + suffix):
                     # Implicit relative import
                     yield context + '.' + module, path
