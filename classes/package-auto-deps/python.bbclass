@@ -114,3 +114,10 @@ def determine_python_depends(d, pkg, files):
     return depends
 
 determine_python_depends[vardeps] += "PYTHONDEPS_FILE_CHECKSUM"
+
+# Disable ourselves if this recipe doesn't provide anything python
+python () {
+    if (d.getVar('PYTHON_SITEPACKAGES_DIR', False) is None and
+        d.getVar('PYTHON_MAJMIN', False) is None):
+        d.setVar('AUTO_DEPEND_TYPES_remove', 'python')
+}

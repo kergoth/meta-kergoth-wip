@@ -12,8 +12,6 @@
 - python:
 
     - Consider handling namespace packages
-    - Consider automatically removing 'python' from AUTO_DEPEND_TYPES if neither
-      PYTHON_SITEPACKAGES_DIR or PYTHON_MAJMIN are defined.
 
 - Add version-specific dependency handling.
   I think this should be doable by making each deps file in pkgdata a list
