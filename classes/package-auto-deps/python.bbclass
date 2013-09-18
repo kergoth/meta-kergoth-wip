@@ -15,7 +15,11 @@ AUTO_DEPEND_PYTHON_HOOK = "determine_python_provides determine_python_depends"
 PYTHON_DEPS_SEARCH_PATHS = "${PYTHON_SITEPACKAGES_DIR}"
 PYTHON_DEPS_SEARCH_PATHS[type] = "list"
 
-PYTHON_PROVIDES_SEARCH_PATHS = "${PYTHON_SITEPACKAGES_DIR} ${libdir}/python${PYTHON_MAJMIN}"
+PYTHON_PROVIDES_SEARCH_PATHS = "\
+    ${PYTHON_SITEPACKAGES_DIR} \
+    ${libdir}/python${PYTHON_MAJMIN} \
+    ${libdir}/python${PYTHON_MAJMIN}/lib-dynload \
+"
 PYTHON_PROVIDES_SEARCH_PATHS[type] = "list"
 
 PYTHON_EXECUTABLE_SEARCH_PATHS = "${bindir} ${base_bindir} ${sbindir} ${libexecdir}"
