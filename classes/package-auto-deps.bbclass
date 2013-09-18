@@ -98,8 +98,8 @@ python process_automatic_dependencies() {
 
                     provided_by[depend] = dep_package
 
-                mapped_depends.add(dep_package)
-                provided_by[depend] = dep_package
+                if dep_package != pkg:
+                    mapped_depends.add(dep_package)
 
             if mapped_depends:
                 depsfile = d.expand("${PKGDEST}/" + pkg + '.' + auto_type + '.autodeps')
