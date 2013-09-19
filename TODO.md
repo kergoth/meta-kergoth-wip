@@ -12,6 +12,7 @@
 - python:
 
     - Consider handling namespace packages
+    - Add the ability to exclude particular files from the dependency scanning
 
 - Add version-specific dependency handling.
   I think this should be doable by making each deps file in pkgdata a list
