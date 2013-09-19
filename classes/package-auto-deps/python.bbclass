@@ -7,9 +7,6 @@
 #AUTO_PYTHON_PROVIDES_EXCLUDE += "python-core:sys"
 
 
-# Which module implements os.path varies with OS
-AUTO_PYTHON_PROVIDES_EXTRA += "python-core:os.path python-core:__builtin__"
-
 AUTO_DEPEND_PYTHON_HOOK = "determine_python_provides determine_python_depends"
 
 PYTHON_DEPS_SEARCH_PATHS = "${PYTHON_SITEPACKAGES_DIR}"
