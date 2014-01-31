@@ -10,10 +10,10 @@ inherit ${AUTO_DEPEND_CLASSES}
 
 
 AUTO_MAPPED_DEPENDS_FILE = "{pkgdest}/{pkg}.{auto_type}.autodeps"
-AUTO_DEPENDS_FILE = "{pkgdest}/auto/{auto_type}/{pkg}"
 
 AUTO_PKGDATA_DIR = "${PKGDATA_DIR}/${MLPREFIX}auto"
 AUTO_PKGDATA_WORKDIR = "${PKGDESTWORK}/${MLPREFIX}auto"
+AUTO_DEPENDS_FILE = "{pkgdata}/auto/{auto_type}/{provide}"
 
 
 def auto_depend_included_types(d):
@@ -77,7 +77,9 @@ python process_automatic_dependencies() {
                         with open(dep_file_path, 'r') as f:
                             dep_package = f.read().rstrip()
                     else:
-                        bb.fatal("No available {} provider for dependency `{}` of {}".format(auto_type, depend, pkg))
+                        msg = "No available {} provider for dependency `{}` of {}".format(auto_type, depend, pkg)
+                        package_qa_handle_error("missing-auto-dep", msg, d)
+                        continue
 
                     provided_by[depend] = dep_package
 
