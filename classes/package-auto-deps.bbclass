@@ -225,4 +225,9 @@ python read_autodeps () {
         d.appendVar('RDEPENDS_' + pkg, ' ' + added_deps)
 }
 
-PACKAGEFUNCS := "${@PACKAGEFUNCS.replace('read_shlibdeps', 'process_automatic_dependencies read_autodeps read_shlibdeps')}"
+python () {
+    if d.getVar('AUTO_DEPEND_TYPES', True).strip() and 'class-target' in d.getVar('OVERRIDES', True).split(':'):
+        packagefuncs = d.getVar('PACKAGEFUNCS', True)
+        packagefuncs = packagefuncs.replace('read_shlibdeps', 'process_automatic_dependencies read_autodeps read_shlibdeps')
+        d.setVar('PACKAGEFUNCS', packagefuncs)
+}
