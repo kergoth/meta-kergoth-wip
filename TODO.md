@@ -1,12 +1,13 @@
-- Use format string variables to act as internal documentation of where the
-  files we read and write are located
+- Use format string variables to act as internal documentation of where the files we read and write are located @inprogress
+
+- Drop intermediate autodeps files as inter-function communication, if
+  possible, in favor of emitting them just as a debugging aid, to simplify the core functionality.
+- Add the ability to specify paths to exclude from the traversal
+
 - Add further documentation to the bbclasses
 - Add variable to opt-out of just provides or just depends of a particular
   auto package type. There are cases where dependency scanning doesn't work
   fully, yet the provides are still useful to satisfy deps of others.
-- Consider dropping the .autodeps files, or just emitting them as a debugging
-  aid, rather than running two packagefuncs and using them as inter-function
-  communication.
 - python:
 
     - Consider handling namespace packages
@@ -35,3 +36,26 @@
   inside a ${@} block expanded from a vardeps flag. It seemingly is not
   available in the python eval context at that point.
 - libfm: ship .pc files based on the gtk version it was built with
+
+- Failures to fix
+
+   -  Missing deps:
+
+        - python-dateutil
+        - python-git
+        - python-imaging
+        - python-mako
+        - python-matplotlib
+        - python-nose
+        - python-pip
+        - python-pycurl
+        - python-pyserial
+        - python-scons
+        - python-smartpm
+        - python-sqlalchemy
+        - python-tornado
+        - python-twisted-core
+
+    - Depscmd error:
+
+        - python-pyrex
