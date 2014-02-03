@@ -75,8 +75,14 @@ def determine_python_depends(d, pkg, files):
     search_paths = oe.data.typed_value('PYTHON_DEPS_SEARCH_PATHS', d)
     dest_paths = filter(os.path.exists,
                         [oe.path.join(inst_root, path) for path in search_paths])
+
+    # Export these to allow importing distutils.sysconfig from python-native
+    env = os.environ.copy()
+    env['BUILD_SYS'] = d.getVar('BUILD_SYS', True)
+    env['HOST_SYS'] = d.getVar('HOST_SYS', True)
+
     if dest_paths:
-        output = subprocess.check_output([depscmd, '-d'] + dest_paths)
+        output = subprocess.check_output([depscmd, '-d'] + dest_paths, env=env)
         depends.extend(l.rstrip().split(None, 1)[0] for l in output.splitlines())
 
     interpreter_pattern = d.getVar('PYTHON_INTERPRETER_PATTERN', True)
