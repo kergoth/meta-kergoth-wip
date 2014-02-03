@@ -4,8 +4,6 @@
 - Add variable to opt-out of just provides or just depends of a particular
   auto package type. There are cases where dependency scanning doesn't work
   fully, yet the provides are still useful to satisfy deps of others.
-- Add the ability to control the behavior when encountering a missing provide
-  / dependency, potentially leveraging the existing package QA handling.
 - Consider dropping the .autodeps files, or just emitting them as a debugging
   aid, rather than running two packagefuncs and using them as inter-function
   communication.
@@ -20,6 +18,10 @@
   the code to split that, and add the ability for a given type to opt-in to
   use of such version specific dependencies
 
+- Consider adding the ability to postpone the mapping from the automatic
+  dependency namespace to the binary package namespace. For example, it would
+  be possible to add auto/python/os.path to RPROVIDES/RDEPENDS and let the
+  package manager do the mapping.
 - Add a sanity check which warns if an autodetected runtime dependency pulls
   in an rdepend which was emitted by a recipe we don't depend upon, to catch
   non-deterministic behavior
