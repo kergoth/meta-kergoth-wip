@@ -41,7 +41,13 @@
 
    -  Missing deps:
 
+        - mysql-python
+        - python-cheetah
+        - python-cython
         - python-dateutil
+        - python-docutils
+        - python-epydoc
+        - python-gdata
         - python-git
         - python-imaging
         - python-mako
@@ -49,6 +55,7 @@
         - python-nose
         - python-pip
         - python-pycurl
+        - python-pyrex
         - python-pyserial
         - python-scons
         - python-smartpm
