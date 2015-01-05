@@ -147,26 +147,21 @@ def get_file_depends(path):
 
 
 def get_depends_recursive(directory):
-    import pkgutil
     directory = os.path.realpath(directory)
 
     provides = dict((v, k) for k, v in get_provides(directory))
-    sys.path[0:0] = [directory]
-    for imp, name, ispkg in pkgutil.walk_packages([directory]):
-        loader = imp.find_module(name)
-        filename = loader.get_filename()
-        if not filename.startswith(directory + '/'):
-            raise DependError(directory, "Package walking encountered path `{}`, outside the tree".format(filename))
-
-        if not filename.endswith('.py'):
+    for filename, provide in provides.iteritems():
+        if os.path.isdir(filename):
+            filename = os.path.join(filename, '__init__.py')
+            ispkg = True
+        elif not filename.endswith('.py'):
             continue
-
-        if ispkg:
-            provide = provides.get(os.path.dirname(filename))
         else:
-            provide = provides.get(filename)
+            ispkg = False
 
-        source = loader.get_source()
+        with open(filename, 'r') as f:
+            source = f.read()
+
         depends = get_code_depends(source, filename, provide, ispkg)
         for depend, by in depends:
             yield depend, by
