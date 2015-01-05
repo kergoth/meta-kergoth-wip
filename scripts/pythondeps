@@ -208,7 +208,7 @@ def main():
                 sys.exit(1)
 
             for module, imp_by in modules:
-                print("{} {}".format(module, imp_by))
+                print("{}\t{}".format(module, imp_by))
     else:
         parser.print_help()
         sys.exit(2)
