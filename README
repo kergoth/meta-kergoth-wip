@@ -19,7 +19,8 @@ This layer depends on:
 Patches
 =======
 
-Please submit any patches via github's pull requests mechanism, and open issues in github's issue tracker to report any problems.
+Please submit any patches via github's pull requests mechanism, and open
+issues in github's issue tracker to report any problems.
 
 
 Table of Contents
@@ -36,9 +37,7 @@ I. Adding the named-configs-prototype layer to your build
 In order to use this layer, you need to make the build system aware of
 it:
 
-```
-$ bitbake-layers add-layer /path/to/meta-named-configs-prototype
-```
+    $ bitbake-layers add-layer /path/to/meta-named-configs-prototype
 
 II. Usage
 =========
