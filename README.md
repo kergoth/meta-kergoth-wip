@@ -1,13 +1,13 @@
 This layer holds work-in-progress metadata for kergoth
 
-### Setup
+### Usage
 
 Assuming a functional oe/poky build environment:
 
-$ git clone https://github.com/kergoth/meta-kergoth/wip
-$ bitbake-layers add-layer meta-kergoth-wip
+    $ git clone https://github.com/kergoth/meta-kergoth/wip
+    $ bitbake-layers add-layer meta-kergoth-wip
 
-### Current content review
+### Content Review
 
 - recipes-devtools/pkgconf: This is an alternative to pkg-config which has no
   glib-2.0 dependency, which could potentially be useful to us. I'm vetting
