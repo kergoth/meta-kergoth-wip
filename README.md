@@ -2,7 +2,7 @@ This layer holds work-in-progress metadata for kergoth
 
 ### Usage
 
-Assuming a functional oe/poky build environment:
+Assuming a functional oe/poky build environment (with setup scripts sourced):
 
     $ git clone https://github.com/kergoth/meta-kergoth-wip
     $ bitbake-layers add-layer meta-kergoth-wip
