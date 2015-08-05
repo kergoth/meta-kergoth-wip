@@ -32,6 +32,8 @@ PACKAGECONFIG ?= ""
 PACKAGECONFIG[strict] = "--enable-strict,--disable-strict,,"
 
 do_install_append () {
+    # Install a wrapper which deals, as much as possible with pkgconf vs
+    # pkg-config compatibility issues.
     install -m 0755 "${WORKDIR}/pkg-config-wrapper" "${D}${bindir}/pkg-config"
 }
 
