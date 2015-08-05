@@ -13,6 +13,6 @@ Assuming a functional oe/poky build environment (with setup scripts sourced):
   glib-2.0 dependency, which could potentially be useful to us. I'm vetting
   builds using it instead of pkg-config to check its sanity. Usage:
 
-    PREFERRED_PROVIDER_pkgconfig = "pkgconf"
-    PREFERRED_PROVIDER_pkgconfig-native = "pkgconf-native"
-    PREFERRED_PROVIDER_nativesdk-pkgconfig = "nativesdk-pkgconf"
+      PREFERRED_PROVIDER_pkgconfig = "pkgconf"
+      PREFERRED_PROVIDER_pkgconfig-native = "pkgconf-native"
+      PREFERRED_PROVIDER_nativesdk-pkgconfig = "nativesdk-pkgconf"
