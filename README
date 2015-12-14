@@ -29,6 +29,7 @@ Table of Contents
    I. Adding the named-configs-prototype layer to your build
   II. Usage
  III. Limitations
+  IV. TODO
 
 
 I. Adding the named-configs-prototype layer to your build
@@ -57,3 +58,10 @@ III. Limitations
 Since the variants are per-recipe, not global, there's currently no way to
 automatically propogate any PREFERRED_VERSION_<recipe> to also apply to the
 variants, the way it's done for multilibs.
+
+IV. TODO
+========
+
+- [ ] Consider adding RPROVIDES/RCONFLICTS/RREPLACES of the original binary
+  package names to all the binary packages, ideally also including dynamic, so
+  selection could be handled on target as well as at build time.
