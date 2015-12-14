@@ -69,6 +69,8 @@ variants, the way it's done for multilibs.
 IV. TODO
 ========
 
-- [ ] Consider adding RPROVIDES/RCONFLICTS/RREPLACES of the original binary
-  package names to all the binary packages, ideally also including dynamic, so
-  selection could be handled on target as well as at build time.
+- [ ] Handle rprovides/rconflicts/rreplaces for dynamic packages, anything
+  that wasn't present at parse time.
+- [ ] Determine if it'll be possible to replace, at runtime via opkg,
+  a variant with the base package, if both are in the feeds. Would we have
+  to set rprovides/rconflicts/rreplaces in the base recipe for all variants?

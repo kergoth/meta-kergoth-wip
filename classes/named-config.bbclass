@@ -36,6 +36,13 @@ python named_config_virtclass_handler () {
         for pkg in pkgs.split():
             pkgs += " " + pkg + "-" + variant
         d.setVar(whitelist, pkgs)
+
+    pn_expanded = d.expand(pn)
+    for pkg in d.getVar("PACKAGES", True).split():
+        orig_pkg = pkg.replace(pn_expanded + "-" + variant, pn)
+        d.appendVar("RPROVIDES_%s" % pkg, " " + orig_pkg)
+        d.appendVar("RREPLACES_%s" % pkg, " " + orig_pkg)
+        d.appendVar("RCONFLICTS_%s" % pkg, " " + orig_pkg)
 }
 
 addhandler named_config_virtclass_handler
