@@ -54,8 +54,10 @@ To add a configuration variant for a specific recipe, in a bbappend:
 
 Then adjust the configuration (e.g. custom entry in filespath to override
 a file, or PACKAGECONFIG, or whatever) as appropriate for the variant, using
-either the virtclass or pn-based override.
+either the virtclass or pn-based override. Ex:
 
+    BBCLASSEXTEND += "named-configs:minimal"
+    PACKAGECONFIG_virtclass-named-config-minimal = ""
 
 III. Limitations
 ================
