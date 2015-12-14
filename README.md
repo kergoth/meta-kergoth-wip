@@ -1,7 +1,22 @@
+Table of Contents
+=================
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Dependencies](#dependencies)
+- [Patches](#patches)
+- [I. Adding the named-configs-prototype layer to your build](#i-adding-the-named-configs-prototype-layer-to-your-build)
+- [II. Usage](#ii-usage)
+- [III. Limitations](#iii-limitations)
+- [IV. TODO](#iv-todo)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 This layer holds a prototype of a BBCLASSEXTEND-based approach to recipe
 variants whose only difference is configuration (e.g. normal and minimal
 busybox variants).
-
 
 Dependencies
 ============
@@ -21,16 +36,6 @@ Patches
 
 Please submit any patches via github's pull requests mechanism, and open
 issues in github's issue tracker to report any problems.
-
-
-Table of Contents
-=================
-
-   I. Adding the named-configs-prototype layer to your build
-  II. Usage
- III. Limitations
-  IV. TODO
-
 
 I. Adding the named-configs-prototype layer to your build
 =========================================================
