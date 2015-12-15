@@ -52,6 +52,10 @@ To add a configuration variant for a specific recipe, in a bbappend:
 
     BBCLASSEXTEND += "named-configs:variant-name"
 
+This makes a variant-name suffixed target available. E.g. if PN is busybox,
+this would make busybox-minimal available, with PROVIDES set to include
+busybox, and RPROVIDES/RCONFLICTS/RREPLACES set for the binary packages.
+
 Then adjust the configuration (e.g. custom entry in filespath to override
 a file, or PACKAGECONFIG, or whatever) as appropriate for the variant, using
 either the virtclass or pn-based override. Ex:
