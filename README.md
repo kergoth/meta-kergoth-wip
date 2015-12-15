@@ -56,7 +56,7 @@ This makes a variant-name suffixed target available. E.g. if PN is busybox,
 this would make busybox-minimal available, with PROVIDES set to include
 busybox, and RPROVIDES/RCONFLICTS/RREPLACES set for the binary packages.
 
-Then adjust the configuration (e.g. custom entry in filespath to override
+Then adjust the configuration (e.g. custom entry in FILESPATH to override
 a file, or PACKAGECONFIG, or whatever) as appropriate for the variant, using
 either the virtclass or pn-based override. Ex:
 
@@ -67,7 +67,7 @@ III. Limitations
 ================
 
 Since the variants are per-recipe, not global, there's currently no way to
-automatically propogate any PREFERRED_VERSION_<recipe> to also apply to the
+automatically propagate any PREFERRED_VERSION_<recipe> to also apply to the
 variants, the way it's done for multilibs.
 
 IV. TODO
