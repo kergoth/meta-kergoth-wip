@@ -1,5 +1,4 @@
-This README file contains information on the contents of the
-musl-nativesdk-wip layer.
+Yocto layer for initial testing usage of musl for the nativesdk libc
 
 ## Dependencies
 
