@@ -1,4 +1,4 @@
-DEPENDS += "linux-libc-headers"
+# This is not needed and causes problems for nativesdk
 DEPENDS_remove = "virtual/${TARGET_PREFIX}binutils"
 
 BBCLASSEXTEND += "nativesdk"
@@ -7,6 +7,7 @@ BBCLASSEXTEND += "nativesdk"
 # changes, so they're lost.
 BUILDSDK_LDFLAGS += "-Wl,-soname,libc.so"
 
+# Fix broken relative links
 do_install_append () {
 	rm -f ${D}${bindir}/ldd
 	lnr ${D}${libdir}/libc.so ${D}${bindir}/ldd
