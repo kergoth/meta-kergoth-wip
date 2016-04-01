@@ -62,3 +62,11 @@ python () {
                 d.getVar('DISABLED_EXPORTS', True).split()):
         d.delVarFlag(var, 'export')
 }
+
+
+POPULATE_SYSROOT_EXPORTS ?= ""
+
+# do_siteconfig_gencache runs ./configure
+POPULATE_SYSROOT_EXPORTS .= "${@' ${CONFIGURE_EXPORTS}' if bb.data.inherits_class('siteconfig', d) and os.path.isdir('${FILE_DIRNAME}/site_config') else ''}"
+
+do_populate_sysroot[exports] += "${POPULATE_SYSROOT_EXPORTS}"
