@@ -10,7 +10,15 @@ BASE_EXPORTS = "\
     \
     ${PKG_CONFIG_EXPORTS} \
 "
+
+CONFIGURE_EXPORTS = "${BASE_EXPORTS}"
+COMPILE_EXPORTS = "${BASE_EXPORTS}"
+INSTALL_EXPORTS = "${BASE_EXPORTS}"
+POPULATE_SYSROOT_EXPORTS = ""
 PACKAGE_EXPORTS = ""
+
+# do_siteconfig_gencache runs ./configure
+POPULATE_SYSROOT_EXPORTS .= "${@' ${CONFIGURE_EXPORTS}' if bb.data.inherits_class('siteconfig', d) and os.path.isdir('${FILE_DIRNAME}/site_config') else ''}"
 
 # add_xorg_abi_depends needs to run pkg-config
 PACKAGE_EXPORTS .= "${@'${PKG_CONFIG_EXPORTS}' if 'add_xorg_abi_depends' in '${PACKAGEFUNCS}'.split() else ''}"
@@ -46,15 +54,12 @@ TARGET_PATH_EXPORTS = "\
     systemd_unitdir systemd_user_unitdir \
 "
 
-CONFIGURE_EXPORTS = "${BASE_EXPORTS}"
-COMPILE_EXPORTS = "${BASE_EXPORTS}"
-INSTALL_EXPORTS = "${BASE_EXPORTS}"
-
 do_configure[exports] += "${CONFIGURE_EXPORTS}"
 do_compile[exports] += "${COMPILE_EXPORTS}"
 do_compile_ptest_base[exports] += "${COMPILE_EXPORTS}"
 do_install[exports] += "${INSTALL_EXPORTS}"
 do_install_ptest_base[exports] += "${INSTALL_EXPORTS}"
+do_populate_sysroot[exports] += "${POPULATE_SYSROOT_EXPORTS}"
 do_package[exports] += "${PACKAGE_EXPORTS}"
 
 python () {
@@ -62,11 +67,3 @@ python () {
                 d.getVar('DISABLED_EXPORTS', True).split()):
         d.delVarFlag(var, 'export')
 }
-
-
-POPULATE_SYSROOT_EXPORTS ?= ""
-
-# do_siteconfig_gencache runs ./configure
-POPULATE_SYSROOT_EXPORTS .= "${@' ${CONFIGURE_EXPORTS}' if bb.data.inherits_class('siteconfig', d) and os.path.isdir('${FILE_DIRNAME}/site_config') else ''}"
-
-do_populate_sysroot[exports] += "${POPULATE_SYSROOT_EXPORTS}"
