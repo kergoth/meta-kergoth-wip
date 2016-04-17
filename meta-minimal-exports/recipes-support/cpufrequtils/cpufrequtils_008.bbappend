@@ -1,4 +1,6 @@
 EXTRA_OEMAKE += "\
+    'BUILD_CC=${BUILD_CC}' \
+    \
     'bindir=${bindir}' \
     'sbindir=${sbindir}' \
     'mandir=${mandir}' \
