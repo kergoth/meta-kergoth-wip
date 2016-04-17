@@ -1,0 +1,66 @@
+From ded280f83df5f10cd6a0e12f4ccfb4797847b6cc Mon Sep 17 00:00:00 2001
+From: Christopher Larson <chris_larson@mentor.com>
+Date: Sun, 17 Apr 2016 13:05:09 -0700
+Subject: [PATCH 2/2] Obey LDFLAGS
+
+Signed-off-by: Christopher Larson <chris_larson@mentor.com>
+---
+ Makefile | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 32d39d8..589efd4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -48,6 +48,7 @@ CCO_LINUX=-Wall -DHAVE_DEV_URANDOM -DHAVE_OSYNC -DHAVE_STRCASECMP -DHAVE_RANDOM
+ CCO_LINUX+=$(CFLAGS)
+ #CCO_LINUX+=-DDEBUG -g
+ CCOC_LINUX=-c
++CCOL_LINUX+=$(LDFLAGS)
+ 
+ # --------------------------------------------------------------------------
+ # SunOS 5.5.1
+@@ -128,31 +129,31 @@ all	:
+ 		echo "  generic      -- for generic unix"
+ 
+ linux	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_LINUX)" "CCO=$(CCO_LINUX)" "CCOC=$(CCOC_LINUX)"
++		$(MAKE) $(TARGETS) "CC=$(CC_LINUX)" "CCO=$(CCO_LINUX)" "CCOC=$(CCOC_LINUX)" "CCOL=$(CCOL_LINUX)"
+ 
+ sunos	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_SUNOS)" "CCO=$(CCO_SUNOS)" "CCOC=$(CCOC_SUNOS)"
++		$(MAKE) $(TARGETS) "CC=$(CC_SUNOS)" "CCO=$(CCO_SUNOS)" "CCOC=$(CCOC_SUNOS)" "CCOL=$(CCOL_SUNOS)"
+ 
+ aix	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_AIX)" "CCO=$(CCO_AIX)" "CCOC=$(CCOC_AIX)"
++		$(MAKE) $(TARGETS) "CC=$(CC_AIX)" "CCO=$(CCO_AIX)" "CCOC=$(CCOC_AIX)" "CCOL=$(CCOL_AIX)"
+ 
+ freebsd	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_FREEBSD)" "CCO=$(CCO_FREEBSD)" "CCOC=$(CCOC_FREEBSD)"
++		$(MAKE) $(TARGETS) "CC=$(CC_FREEBSD)" "CCO=$(CCO_FREEBSD)" "CCOC=$(CCOC_FREEBSD)" "CCOL=$(CCOL_FREEBSD)"
+ 
+ solarissp	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_SOLARISSP)" "CCO=$(CCO_SOLARISSP)" "CCOC=$(CCOC_SOLARISSP)"
++		$(MAKE) $(TARGETS) "CC=$(CC_SOLARISSP)" "CCO=$(CCO_SOLARISSP)" "CCOC=$(CCOC_SOLARISSP)" "CCOL=$(CCOL_SOLARISSP)"
+ 
+ solarisx86	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_SOLARISX86)" "CCO=$(CCO_SOLARISX86)" "CCOC=$(CCOC_SOLARISX86)"
++		$(MAKE) $(TARGETS) "CC=$(CC_SOLARISX86)" "CCO=$(CCO_SOLARISX86)" "CCOC=$(CCOC_SOLARISX86)" "CCOL=$(CCOL_SOLARISX86)"
+ 
+ digitalalpha	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_DIGITALALPHA)" "CCO=$(CCO_DIGITALALPHA)" "CCOC=$(CCOC_DIGITALALPHA)"
++		$(MAKE) $(TARGETS) "CC=$(CC_DIGITALALPHA)" "CCO=$(CCO_DIGITALALPHA)" "CCOC=$(CCOC_DIGITALALPHA)" "CCOL=$(CCOL_DIGITALALPHA)"
+ 
+ generic	:	
+-		$(MAKE) $(TARGETS) "CC=$(CC_GENERIC)" "CCO=$(CCO_GENERIC)" "CCOC=$(CCOC_GENERIC)"
++		$(MAKE) $(TARGETS) "CC=$(CC_GENERIC)" "CCO=$(CCO_GENERIC)" "CCOC=$(CCOC_GENERIC)" "CCOL=$(CCOL_GENERIC)"
+ 
+ wipe	:	$(OBJECTS)
+-		$(CC) $(CCO) $(OBJECTS) -o wipe
++		$(CC) $(CCO) $(CCOL) $(OBJECTS) -o wipe
+ 
+ wipe.o	:	wipe.c random.h misc.h version.h
+ 		$(CC) $(CCO) $(CCOC) wipe.c -o wipe.o
+-- 
+2.8.0
+
