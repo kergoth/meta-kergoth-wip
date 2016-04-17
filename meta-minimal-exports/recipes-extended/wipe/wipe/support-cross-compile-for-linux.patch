@@ -1,0 +1,45 @@
+From b4faf0addf7ed337e2181b9c5fec631553dd15ef Mon Sep 17 00:00:00 2001
+From: Hongxu Jia <hongxu.jia@windriver.com>
+Date: Wed, 4 Nov 2015 02:29:05 -0500
+Subject: [PATCH 1/2] Makefile: support cross compile for linux
+
+Upstream-Status: Pending
+Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
+
+---
+ Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 17d9758..32d39d8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -41,7 +41,7 @@
+ # Linux 2.0.x
+ #
+ 
+-CC_LINUX=gcc
++CC_LINUX=$(CC)
+ CCO_LINUX=-Wall -DHAVE_DEV_URANDOM -DHAVE_OSYNC -DHAVE_STRCASECMP -DHAVE_RANDOM -DWEAK_RC6 -DSYNC_WAITS_FOR_SYNC -DFIND_DEVICE_SIZE_BY_BLKGETSIZE -DSIXTYFOUR -D__USE_LARGEFILE -D_FILE_OFFSET_BITS=64
+ # default should be to turn off debugging and to turn on optimization.
+ #CCO_LINUX+=-O9 -pipe -fomit-frame-pointer -finline-functions -funroll-loops -fstrength-reduce
+@@ -112,6 +112,7 @@ CCOC_DIGITALALPHA=-c
+ 
+ #
+ 
++bindir?=/usr/bin
+ OBJECTS=wipe.o arcfour.o md5.o misc.o random.o
+ TARGETS=wipe wipe.tr-asc.1
+ 
+@@ -185,6 +186,7 @@ clean	:
+ 		rm -f wipe $(OBJECTS) wipe.tr-asc.1 version.h
+ 
+ install:
+-	install -m755 -o root -g root wipe $(DESTDIR)/usr/bin
++	[ -e $(DESTDIR)$(bindir) ] || mkdir -p $(DESTDIR)$(bindir)
++	install -m755 -o root -g root wipe $(DESTDIR)$(bindir)
+ 
+ .PHONY: always clean install
+-- 
+2.8.0
+
