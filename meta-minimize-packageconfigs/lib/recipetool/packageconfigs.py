@@ -51,7 +51,7 @@ def disable_packageconfigs_deps(args):
                 else:
                     op = '='
                 seen_configs[pn] |= disable_configs
-                outfile.write('PACKAGECONFIGS_DISABLED_pn-%s %s "%s"\n' % (pn, op, ' '.join(disable_configs)))
+                outfile.write('PACKAGECONFIGS_DISABLED_pn-%s %s "%s"\n' % (pn, op, ' '.join(sorted(disable_configs))))
     finally:
         if args.filename != '-':
             outfile.close()
