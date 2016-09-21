@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://COPYING.SLIBTOOL;md5=e0611fc36af9dddb0f9a111341c0e70a"
 
-SRC_URI = "git://midipix.org/slibtool;protocol=git;branch=main"
+SRC_URI = "git://github.com/midipix-project/slibtool"
 S = "${WORKDIR}/git"
 B = "${S}"
 PV = "0.5.0+git${SRCPV}"
