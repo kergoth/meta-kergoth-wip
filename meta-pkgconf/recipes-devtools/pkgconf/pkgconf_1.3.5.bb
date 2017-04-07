@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE = "-1"
 # The pkgconf license seems to be functionally equivalent to BSD-2-Clause or
 # ISC, but has different wording, so needs its own name.
 LICENSE = "pkgconf"
-LIC_FILES_CHKSUM = "file://COPYING;md5=4822b4dd464a74e654c7406a5f956ce4"
+LIC_FILES_CHKSUM = "file://COPYING;md5=548a9d1db10cc0a84810c313a0e9266f"
 
 SRC_URI = "\
     https://distfiles.dereferenced.org/pkgconf/pkgconf-${PV}.tar.gz \
@@ -19,17 +19,13 @@ SRC_URI = "\
     file://pkg-config-native.in \
     file://run_test_fragment.sh \
 "
-SRC_URI[md5sum] = "7c716e0c05ccf6fe54c616ca0a593de2"
-SRC_URI[sha256sum] = "045700b854c4ba3cc43b97c608013c22b75f0f6c5498f5ab431ad51a33049fd0"
+SRC_URI[md5sum] = "ce2533e12f03c4f8eb04179f86be666f"
+SRC_URI[sha256sum] = "0909f0ace2f9d73c02f568bda05a95b717a652d692642f16e28701e3d86096db"
 MIRRORS += "http://.*/.*/ https://github.com/pkgconf/pkgconf/releases/download/pkgconf-${PV}/\n "
 
 inherit autotools update-alternatives ptest
 
 EXTRA_OECONF += "--with-pkg-config-dir='${libdir}/pkgconfig:${datadir}/pkgconfig'"
-
-PACKAGECONFIG ?= ""
-# Enables POSIX-strict argument checking and disables some workarounds
-PACKAGECONFIG[strict] = "--enable-strict,--disable-strict,,"
 
 do_install_append () {
     # Install a wrapper which deals, as much as possible with pkgconf vs
