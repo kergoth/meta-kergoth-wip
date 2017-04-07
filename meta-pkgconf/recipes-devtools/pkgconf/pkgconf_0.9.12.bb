@@ -14,13 +14,13 @@ LICENSE = "pkgconf"
 LIC_FILES_CHKSUM = "file://COPYING;md5=4822b4dd464a74e654c7406a5f956ce4"
 
 SRC_URI = "\
-    http://rabbit.dereferenced.org/%7Enenolod/distfiles/pkgconf-${PV}.tar.bz2 \
+    https://distfiles.dereferenced.org/pkgconf/pkgconf-${PV}.tar.gz \
     file://pkg-config-wrapper \
     file://pkg-config-native.in \
     file://run_test_fragment.sh \
 "
-SRC_URI[md5sum] = "a7b523fc9af9357d7199560d2a49ddbf"
-SRC_URI[sha256sum] = "7ec8b516e655e247f4ba976837cee808134785819ab8f538f652fe919cc6c09f"
+SRC_URI[md5sum] = "7c716e0c05ccf6fe54c616ca0a593de2"
+SRC_URI[sha256sum] = "045700b854c4ba3cc43b97c608013c22b75f0f6c5498f5ab431ad51a33049fd0"
 MIRRORS += "http://.*/.*/ https://github.com/pkgconf/pkgconf/releases/download/pkgconf-${PV}/\n "
 
 inherit autotools update-alternatives ptest
