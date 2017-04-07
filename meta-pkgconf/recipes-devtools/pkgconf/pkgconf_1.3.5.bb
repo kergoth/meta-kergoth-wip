@@ -1,8 +1,11 @@
 SUMMARY = "pkgconf provides compiler and linker configuration for development frameworks."
-DESCRIPTION = "${SUMMARY} pkgconf is an alternative implementation of pkg-config."
-HOMEPAGE = "https://github.com/pkgconf/pkgconf"
+DESCRIPTION = "pkgconf is a program which helps to configure compiler and linker \
+flags for development frameworks. It is similar to pkg-config from \
+freedesktop.org, providing additional functionality while also maintaining \
+compatibility."
+HOMEPAGE = "http://pkgconf.org"
 BUGTRACKER = "https://github.com/pkgconf/pkgconf/issues"
-SECTION = "console/utils"
+SECTION = "devel"
 PROVIDES += "pkgconfig"
 RPROVIDES_${PN} += "pkgconfig"
 RDEPENDS_${PN}-ptest += "bash"
