@@ -8,7 +8,6 @@ BUGTRACKER = "https://github.com/pkgconf/pkgconf/issues"
 SECTION = "devel"
 PROVIDES += "pkgconfig"
 RPROVIDES_${PN} += "pkgconfig"
-RDEPENDS_${PN}-ptest += "bash"
 DEFAULT_PREFERENCE = "-1"
 
 # The pkgconf license seems to be functionally equivalent to BSD-2-Clause or
@@ -20,12 +19,11 @@ SRC_URI = "\
     https://distfiles.dereferenced.org/pkgconf/pkgconf-${PV}.tar.xz \
     file://pkg-config-wrapper \
     file://pkg-config-native.in \
-    file://run_test_fragment.sh \
 "
 SRC_URI[md5sum] = "cd3f3b2328996eb7eac4ab24f58989ba"
 SRC_URI[sha256sum] = "886c397b22907209a7483229a8bf473afe151de50527c4b4d04b94fdba0f0c8e"
 
-inherit autotools update-alternatives ptest
+inherit autotools update-alternatives
 
 EXTRA_OECONF += "--with-pkg-config-dir='${libdir}/pkgconfig:${datadir}/pkgconfig'"
 
@@ -41,18 +39,6 @@ do_install_append_class-native () {
     sed -e "s|@PATH_NATIVE@|${PKG_CONFIG_PATH}|" \
         < ${WORKDIR}/pkg-config-native.in > ${B}/pkg-config-native
     install -m755 ${B}/pkg-config-native ${D}${bindir}/pkg-config-native
-}
-
-do_compile_ptest () {
-    # We remove the run_test function from run.sh and provide our own, which
-    # complies with the ptest conventions.
-    install -m 0755 "${WORKDIR}/run_test_fragment.sh" tests/run-ptest
-    sed -n -e '/^selfdir=/{ :start; /^echo$/q; p; n; b start; }' tests/run.sh >>tests/run-ptest
-}
-
-do_install_ptest_base () {
-    install -d "${D}${PTEST_PATH}"
-    cp -a "${B}/tests/." "${S}/tests"/*/ "${D}${PTEST_PATH}/"
 }
 
 ALTERNATIVE_${PN} = "pkg-config"
