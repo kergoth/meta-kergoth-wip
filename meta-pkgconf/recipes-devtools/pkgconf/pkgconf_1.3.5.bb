@@ -48,9 +48,8 @@ ALTERNATIVE_${PN} = "pkg-config"
 # specifying an appropriate provide.
 RPROVIDES_${PN} += "pkgconfig(pkg-config)"
 
-# Set an empty dev package to ensure the base PN package gets the pkg.m4
-# macros, we don't deliver any other -dev files.
-FILES_${PN}-dev = ""
-FILES_${PN} += "${datadir}/aclocal/pkg.m4"
+# Include pkg.m4 in the main package, leaving libpkgconf dev files in -dev
+FILES_${PN}-dev_remove = "${datadir}/aclocal"
+FILES_${PN} += "${datadir}/aclocal"
 
 BBCLASSEXTEND += "native nativesdk"
