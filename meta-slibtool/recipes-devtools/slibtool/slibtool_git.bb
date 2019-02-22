@@ -29,10 +29,11 @@ CONFIGUREOPTS = "\
 	--includedir=${includedir} \
 	--mandir=${mandir} \
 	--libexecdir=${libexecdir} \
-	\
+"
+CONFIGUREOPTS_append_class-target = "\
 	--build=${BUILD_SYS} \
 	--host=${HOST_SYS} \
-	--target=${HOST_SYS} \
+	--target=${TARGET_SYS} \
 "
 
 # 'ARCH=${HOST_ARCH}'
