@@ -1,10 +1,10 @@
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://COPYING.SLIBTOOL;md5=e0611fc36af9dddb0f9a111341c0e70a"
+LIC_FILES_CHKSUM = "file://COPYING.SLIBTOOL;md5=b98dcfb4f40f76196a7cd2ed1fa48979"
 
-SRC_URI = "git://github.com/midipix-project/slibtool"
+SRC_URI = "git://github.com/midipix-project/slibtool;branch=main"
 S = "${WORKDIR}/git"
 B = "${S}"
-PV = "0.5.0+git${SRCPV}"
+PV = "0.5.28+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 
 do_configure () {
