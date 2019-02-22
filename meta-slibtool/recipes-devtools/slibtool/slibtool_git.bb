@@ -23,7 +23,7 @@ BBCLASSEXTEND = "native"
 
 CONFIGUREOPTS = "\
 	--prefix=${prefix} \
-	--exec-prefix=${exec-prefix} \
+	--exec-prefix=${exec_prefix} \
 	--bindir=${bindir} \
 	--libdir=${libdir} \
 	--includedir=${includedir} \
