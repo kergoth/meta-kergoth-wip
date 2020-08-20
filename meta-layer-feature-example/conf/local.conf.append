@@ -1,0 +1,11 @@
+# Uncomment to enable the example-1 feature
+#LAYER_FEATURES += "example-1"
+
+# Uncomment to enable the example-2 feature
+#DISTRO_FEATURES_append = " example-2"
+
+# Uncomment to enable the example-3 feature
+#MACHINE_FEATURES_append = " example-3"
+
+# Uncomment to enable the example-4 feature, if it's supported by the MACHINE
+#DISTRO_FEATURES_append = " example-4"
