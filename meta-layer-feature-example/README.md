@@ -4,4 +4,4 @@ This Yocto / OpenEmbedded layer is an example template for the creation of new *
 
 ## Usage
 
-Copy classes/layer_overrides.bbclass to your *feature* layer and edit your conf/layer.conf in the way that the conf/layer.conf is used in this layer, then you may use the `feature-yourfeature` override in your recipes, appends, config files, and classes.
+Copy classes/feature_overrides.bbclass to your *feature* layer and edit your conf/layer.conf in the way that the conf/layer.conf is used in this layer, then you may use the `feature-yourfeature` override in your recipes, appends, config files, and classes.

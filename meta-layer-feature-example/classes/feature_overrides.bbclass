@@ -9,10 +9,10 @@ def unique_everseen(iterable):
         seen_add(element)
         yield element
 
-python add_layer_overrides () {
-    layer_overrides = filter(None, d.getVar('LAYEROVERRIDES').split(':'))
-    if layer_overrides:
-        d.prependVar('OVERRIDES', ':'.join(unique_everseen(layer_overrides)) + ':')
+python add_feature_overrides () {
+    feature_overrides = filter(None, d.getVar('FEATUREOVERRIDES').split(':'))
+    if feature_overrides:
+        d.prependVar('OVERRIDES', ':'.join(unique_everseen(feature_overrides)) + ':')
 }
-add_layer_overrides[eventmask] = "bb.event.ConfigParsed"
-addhandler add_layer_overrides
+add_feature_overrides[eventmask] = "bb.event.ConfigParsed"
+addhandler add_feature_overrides
