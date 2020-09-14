@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -euo pipefail
 
 usage () {
     cat >&2 <<END
@@ -11,30 +13,37 @@ LAYER is a layer's name, as specified in BBFILE_COLLECTIONS in the layer.conf.
 
 Options:
 
-  -d DISTRO     Include the layer which includes conf/distro/DISTRO.conf
-  -m MACHINE    Include the layer which includes conf/machine/MACHINE.conf
-  -M SDKMACHINE Include the layer which includes conf/machine-sdk/SDKMACHINE.conf
+  -d DISTRO     Include the layers which include conf/distro/DISTRO.conf
+  -m MACHINE    Include the layers which include conf/machine/MACHINE.conf
+  -M SDKMACHINE Include the layers which include conf/machine-sdk/SDKMACHINE.conf
+  -f PATH       Include the layers which include PATH
   -k            Keep the existing layers rather than starting fresh
   -s            Sort BBLAYERS by layer priority
 END
     exit 2
 }
 
-distro=
-machine=
-sdkmachine=
+
+tmpdir="$(mktemp -d -t "${0##*/}.XXXXXX")" || exit 1
+trap 'rm -rf "$tmpdir"' EXIT INT TERM
+layersfile="$tmpdir/layers"
+pathsfile="$tmpdir/paths"
+
 sort=0
 keep_existing=0
 while getopts d:m:M:ksh opt; do
     case "$opt" in
         d)
-            distro="$OPTARG"
+            echo "conf/distro/$OPTARG.conf" >>"$pathsfile"
             ;;
         m)
-            machine="$OPTARG"
+            echo "conf/machine/$OPTARG.conf" >>"$pathsfile"
             ;;
         M)
-            sdkmachine="$OPTARG"
+            echo "conf/machine-sdk/$OPTARG.conf" >>"$pathsfile"
+            ;;
+        f)
+            echo "$OPTARG" >>"$pathsfile"
             ;;
         k)
             keep_existing=1
@@ -49,35 +58,39 @@ while getopts d:m:M:ksh opt; do
 done
 shift $((OPTIND - 1))
 
-
-layersfile="$(mktemp -t "${0##*/}.XXXXXX")" || exit 1
-trap 'rm -f "$layersfile"' EXIT INT TERM
-
-if [ $# -ne 0 ]; then
-    bitbake-layers find-layer-by-name "$@" >>"$layersfile"
+if [ $# -eq 0 ] && ! [ -s "$pathsfile" ]; then
+    exit 0
 fi
 
-set --
-if [ -n "$distro" ]; then
-    set -- "conf/distro/${distro}.conf"
-fi
-if [ -n "$machine" ]; then
-    set -- "$@" "conf/machine/${machine}.conf"
-fi
-if [ -n "$sdkmachine" ]; then
-    set -- "$@" "conf/machine-sdk/${sdkmachine}.conf"
-fi
-if [ $# -ne 0 ]; then
-    bitbake-layers find-layer-with-path lib/bblayers/mel.py "$@" >>"$layersfile"
-fi
-
+bitbake-layers add-layer "$(dirname "$(dirname "$0")")"
 if [ $keep_existing -eq 0 ]; then
-    # We don't want to reset until after we find the layers, so we prefer the
+    # FIXME: We don't want to reset until after we find the layers, so we prefer the
     # layers already configured in BBLAYERS now to those we find on disk.
     bitbake-layers reset-layers
 fi
+bitbake-layers add-layer "$(dirname "$(dirname "$0")")"
 
-cat "$layersfile" | tr '\n' '\0' | xargs -0 -n 1 bitbake-layers add-layer
+if [ $# -ne 0 ]; then
+    for arg; do
+        if [ -f "$arg/conf/layer.conf" ]; then
+            echo "$arg" >>"$layersfile"
+        else
+            echo "$arg"
+        fi
+    done \
+        | tr '\n' '\0' \
+        | xargs -0 bitbake-layers find-layer-by-name >>"$layersfile.new" \
+            && cat "$layersfile.new" >>"$layersfile"
+fi
+
+cat "$pathsfile" \
+    | tr '\n' '\0' \
+    | xargs -0 bitbake-layers find-layer-with-path lib/bblayers/mel.py >>"$layersfile"
+
+cat "$layersfile" \
+    | grep -Ev '^(NOTE|WARNING|ERROR:)' \
+    | tr '\n' '\0' \
+    | xargs -0 bitbake-layers add-layer
 
 if [ $sort -eq 1 ]; then
     bitbake-layers sort-layers

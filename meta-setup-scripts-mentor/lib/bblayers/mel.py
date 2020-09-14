@@ -166,7 +166,7 @@ class MELPlugin(LayerPlugin):
         """
         by_name, configured = collections.defaultdict(set), []
         varhistory = self.tinfoil.config_data.varhistory
-        layer_filemap = varhistory.get_variable_items_files('BBFILE_COLLECTIONS', self.tinfoil.config_data)
+        layer_filemap = varhistory.get_variable_items_files('BBFILE_COLLECTIONS')
         for item, filename in layer_filemap.items():
             by_name[item].add(os.path.dirname(os.path.dirname(filename)))
             configured.append(item)
